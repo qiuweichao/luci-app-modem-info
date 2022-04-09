@@ -1,21 +1,12 @@
-# luci-app-3ginfo-lite
+# Luci-app-modem-info
 
-![GitHub release (latest by date)](https://img.shields.io/github/v/release/4IceG/luci-app-3ginfo-lite?style=flat-square)
-![GitHub stars](https://img.shields.io/github/stars/4IceG/luci-app-3ginfo-lite?style=flat-square)
-![GitHub forks](https://img.shields.io/github/forks/4IceG/luci-app-3ginfo-lite?style=flat-square)
-![GitHub All Releases](https://img.shields.io/github/downloads/4IceG/luci-app-3ginfo-lite/total)
+Luci-app-modem-info is fork from https://github.com/4IceG/luci-app-3ginfo-lite.git
 
-Luci-app-3ginfo-lite is fork from https://github.com/obsy/packages/tree/master/easyconfig/addon
-
-### <img src="https://raw.githubusercontent.com/4IceG/Personal_data/master/dooffy_design_icons_EU_flags_United_Kingdom.png" height="32">
-Luci-app-3ginfo-lite is a simplified version of the 3ginfo project. Works with mPCI-E/M.2 and USB 3G/LTE modems.
-
-### <img src="https://raw.githubusercontent.com/4IceG/Personal_data/master/dooffy_design_icons_EU_flags_Poland.png" height="32">
-Luci-app-3ginfo-lite jest uproszczoną wersją projektu 3ginfo. Działa na modemach mPCI-E/M.2 oraz USB 3G/LTE.
+Luci-app-modem-info是3ginfo项目的简化版本，适用于mPCI-E/M.2和USB 3G/LTE无线模块，在openwrt的web界面中可显示无线模块的相关信息。
 
 
 ``` bash
-Supported devices (tested devices):
+支持的模块 (已测试过):
  - Quectel EM12/EM160R-GL
  - Quectel EP06-E
  - Quectel EC20/EC25
@@ -26,7 +17,7 @@ Supported devices (tested devices):
  - Huawei E3276 HiLink
  - Huawei E5786 (mobile-wifi / HiLink)
  
-Not tested devices (Not all data can be shown and scripts need to be corrected):
+没有测试完全的设备 (并不是所有的数据都可以显示出来，需要手动修改相关脚本指令等):
  - Sierra Wireless MC7710
  - Sierra Wireless EM7455
  - ASKEY WWHC050
@@ -37,30 +28,17 @@ Not tested devices (Not all data can be shown and scripts need to be corrected):
 
 ```
 
-## <img src="https://raw.githubusercontent.com/4IceG/Personal_data/master/dooffy_design_icons_EU_flags_United_Kingdom.png" height="32"> Installation / <img src="https://raw.githubusercontent.com/4IceG/Personal_data/master/dooffy_design_icons_EU_flags_Poland.png" height="32"> Instalacja
+## 安装
 ``` bash
-> For conventional modems.
-Modem drivers are required for proper operation.
+> 通用模块依赖包.
 opkg install kmod-usb-serial kmod-usb-serial-option
 
-> For Huawei HiLink modems.
+> 对于华为HiLink系列模块还需安装以下依赖包.
 opkg install wget-nossl
 
-Dependency required.
+额外需要安装sms-tool(https://github.com/obsy/sms_tool).
 opkg install sms-tool_2021-12-03-d38898f4-1_XXX.ipk
-
-#The sms-tool package is not available in the OpenWrt core repository. 
-#Sms-tool is only available in the eko.one.pl forum repository. 
-#If you do not have an image from forum eko.one.pl you have to compile the package manually.
-
-#For images from the eko.one.pl forum we proceed:
-opkg update
-opkg install sms-tool
-
-Install app.
-wget https://github.com/4IceG/luci-app-3ginfo-lite/releases/download/1.0.15-20220325/luci-app-3ginfo-lite_1.0.15-20220325_all.ipk -O /tmp/luci-app-3ginfo-lite_1.0.15-20220325_all.ipk
-opkg install /tmp/luci-app-3ginfo-lite_1.0.15-20220325_all.ipk
-
+如果直接opkg安装后sms-tool命令不能正常使用，需要把sms-tool目录下的Makefile放到openwrt源码package目录下，自行编译后安装可以正常使用。
 ```
 
 
@@ -68,5 +46,4 @@ opkg install /tmp/luci-app-3ginfo-lite_1.0.15-20220325_all.ipk
 
 ![](https://github.com/4IceG/Personal_data/blob/master/zrzuty/1.0.15-20220325.gif?raw=true)
 
-## <img src="https://raw.githubusercontent.com/4IceG/Personal_data/master/dooffy_design_icons_EU_flags_United_Kingdom.png" height="32"> Thanks to / <img src="https://raw.githubusercontent.com/4IceG/Personal_data/master/dooffy_design_icons_EU_flags_Poland.png" height="32"> Podziękowania dla
-- [obsy (Cezary Jackiewicz)](https://github.com/obsy)
+## 
