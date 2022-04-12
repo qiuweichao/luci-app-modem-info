@@ -399,6 +399,39 @@ return view.extend({
 						}
 					}
 
+					if (document.getElementById('imsi')) {
+						var view = document.getElementById("imsi");
+
+						if (json.imsi == '') {
+							view.textContent = '-';
+						}
+						else {
+							view.textContent = json.imsi;
+						}
+					}
+
+					if (document.getElementById('iccid')) {
+						var view = document.getElementById("iccid");
+
+						if (json.iccid == '') {
+							view.textContent = '-';
+						}
+						else {
+							view.textContent = json.iccid;
+						}
+					}
+
+					if (document.getElementById('imei')) {
+						var view = document.getElementById("imei");
+
+						if (json.imei == '') {
+							view.textContent = '-';
+						}
+						else {
+							view.textContent = json.imei;
+						}
+					}
+
 					if (document.getElementById('lac')) {
 						var view = document.getElementById("lac");
 						if (json.lac_dec == '' || json.lac_hex == '') { 
@@ -425,6 +458,7 @@ return view.extend({
 						view.textContent = json.lac_hex   + ' (' + json.lac_dec + ')' ;
 						}
 					}
+
 
 					if (document.getElementById('cid')) {
 						var view = document.getElementById("cid");
@@ -550,7 +584,18 @@ return view.extend({
 					E('div', { 'class': 'td left', 'width': '33%' }, [ _('TAC: ')]),
 					E('div', { 'class': 'td left', 'id': 'tac' }, [ '-' ]),
 					]),
-
+				E('tr', { 'class': 'tr' }, [
+					E('div', { 'class': 'td left', 'width': '33%' }, [ _('IMSI: ')]),
+					E('div', { 'class': 'td left', 'id': 'imsi' }, [ '-' ]),
+					]),
+				E('tr', { 'class': 'tr' }, [
+					E('div', { 'class': 'td left', 'width': '33%' }, [ _('ICCID: ')]),
+					E('div', { 'class': 'td left', 'id': 'iccid' }, [ '-' ]),
+					]),
+				E('tr', { 'class': 'tr' }, [
+					E('div', { 'class': 'td left', 'width': '33%' }, [ _('IMEI: ')]),
+					E('div', { 'class': 'td left', 'id': 'imei' }, [ '-' ]),
+					]),
 				E('tr', { 'class': 'tr' }, [
 					E('div', { 'class': 'td left', 'width': '33%' }, [ _('CSQ: ')]),
 					E('div', { 'class': 'td' }, E('div', {

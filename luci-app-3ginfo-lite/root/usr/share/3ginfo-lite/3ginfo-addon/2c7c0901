@@ -88,6 +88,14 @@ then
       MODEL=$(echo $DEVV | awk -F 'ati|Revision:' '{print $2}'| xargs)
 fi
 
+OCCID=$(sms_tool -d $DEVICE at "at+iccid")
+ICCID=$(echo "$OCCID" | awk -F[,:] '/^\+ICCID:/ {print $2}' | xargs)
+
+OMSI=$(sms_tool -d $DEVICE at "at+cimi")
+IMSI=$(echo "$OMSI" | grep -A2 cimi | awk 'NR ==2{gsub("\r","");print $0}')
+
+OMEI=$(sms_tool -d $DEVICE at "at+cgsn")
+IMEI=$(echo "$OMEI" | grep -A2 cgsn | awk 'NR ==2{gsub("\r","");print $0}')
 # Protocol
 # DRIVER=QMI_WWAN & DRIVER=CDC_MBIM & DRIVER=CDC_ETHER
 PV=$(cat /sys/kernel/debug/usb/devices)
