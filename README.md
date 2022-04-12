@@ -42,7 +42,7 @@ opkg install sms-tool_2021-12-03-d38898f4-1_XXX.ipk
 ```
 
 
-### <img src="https://raw.githubusercontent.com/4IceG/Personal_data/master/dooffy_design_icons_EU_flags_United_Kingdom.png" height="32"> Preview / <img src="https://raw.githubusercontent.com/4IceG/Personal_data/master/dooffy_design_icons_EU_flags_Poland.png" height="32"> Podgląd
+
 
 ![](https://github.com/4IceG/Personal_data/blob/master/zrzuty/1.0.15-20220325.gif?raw=true)
 
