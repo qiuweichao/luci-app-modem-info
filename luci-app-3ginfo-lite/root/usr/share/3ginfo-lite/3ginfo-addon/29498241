@@ -1,0 +1,88 @@
+# Quectel EC20-E
+# Quectel EC25
+
+O=$(sms_tool -d $DEVICE at "AT\$MYADCTEMP=0")
+
+T=$(echo "$O" | awk -F[,:] '/MYADCTEMP:/{gsub("\r","");print $2}')
+if [ -n "$T" ]; then
+	[ -n "$ADDON" ] && ADDON="$ADDON,"
+	TEMP="$T &deg;C"
+	ADDON="$ADDON"'{"Temperatura":"'$T' &deg;C"}'
+fi
+
+O=$(sms_tool -d $DEVICE at "at+netdmsg")
+T=$(echo "$O" | awk -F[,:] '/^\+NETDMSG:/ {print $6}' | xargs)
+if [ "x$T" = "xTDD LTE" ] || [ "x$T" = "xFDD LTE" ]; then
+#	CELLID=$(echo "$O" | awk -F[,:] '/^\+QENG:/ {print $8}' | xargs)
+	PCI=$(echo "$O" | awk -F[,:] '/^\+NETDMSG:/ {print $5}' | xargs)
+	EARFCN=$(echo "$O" | awk -F[,:] '/^\+NETDMSG:/ {print $8}' | xargs)
+#	FREQ_BAND_IND=$(echo "$O" | awk -F[,:] '/^\+QENG:/ {print $11}' | xargs)
+#	UL_BANDWIDTH=$(echo "$O" | awk -F[,:] '/^\+QENG:/ {print $12}' | xargs)
+#	DL_BANDWIDTH=$(echo "$O" | awk -F[,:] '/^\+QENG:/ {print $13}' | xargs)
+#	TAC=$(echo "$O" | awk -F[,:] '/^\+QENG:/ {print $14}' | xargs)
+	RSRP=$(echo "$O" | awk -F[,:] '/^\+NETDMSG:/ {print $9}' | xargs)
+	RSRQ=$(echo "$O" | awk -F[,:] '/^\+NETDMSG:/ {print $14}' | xargs | awk '{printf "%.1f\n", $1/10}' )
+	RSSI=$(echo "$O" | awk -F[,:] '/^\+NETDMSG:/ {print $15}' | xargs | awk '{printf "%.1f\n", $1/10}' ) 
+	SINR=$(echo "$O" | awk -F[,:] '/^\+NETDMSG:/ {print $16}' | xargs | awk '{printf "%.1f\n", $1/10}' )
+#	SRXLEV=$(echo "$O" | awk -F[,:] '/^\+QENG:/ {print $19}' | xargs)
+#	[ -n "$ADDON" ] && ADDON="$ADDON,"
+#	ADDON="$ADDON"'{"CELLID":"'$CELLID'"}'
+	[ -n "$ADDON" ] && ADDON="$ADDON,"
+	ADDON="$ADDON"'{"PCI":"'$PCI'"}'
+	[ -n "$ADDON" ] && ADDON="$ADDON,"
+	ADDON="$ADDON"'{"EARFCN":"'$EARFCN'"}'
+#	[ -n "$ADDON" ] && ADDON="$ADDON,"
+#	ADDON="$ADDON"'{"FREQ_BAND_IND":"'$FREQ_BAND_IND'"}'
+#	[ -n "$ADDON" ] && ADDON="$ADDON,"
+#	ADDON="$ADDON"'{"UL_BANDWIDTH":"'$UL_BANDWIDTH'"}'
+#	[ -n "$ADDON" ] && ADDON="$ADDON,"
+#	ADDON="$ADDON"'{"DL_BANDWIDTH":"'$DL_BANDWIDTH'"}'
+#	[ -n "$ADDON" ] && ADDON="$ADDON,"
+#	ADDON="$ADDON"'{"TAC":"'$TAC'"}'
+	[ -n "$ADDON" ] && ADDON="$ADDON,"
+	ADDON="$ADDON"'{"RSRP":"'$RSRP' dBm"}'
+	[ -n "$ADDON" ] && ADDON="$ADDON,"
+	ADDON="$ADDON"'{"RSRQ":"'$RSRQ' dB"}'
+	[ -n "$ADDON" ] && ADDON="$ADDON,"
+	ADDON="$ADDON"'{"RSSI":"'$RSSI' dBm"}'
+	[ -n "$ADDON" ] && ADDON="$ADDON,"
+	ADDON="$ADDON"'{"SINR":"'$SINR' dB"}'
+#	[ -n "$ADDON" ] && ADDON="$ADDON,"
+#	ADDON="$ADDON"'{"SRXLEV":"'$SRXLEV'"}'
+fi
+
+
+# Modem type
+OF=$(sms_tool -d $DEVICE at "ati")
+DEVV=$(echo $OF | tr -s "\n"  | xargs)
+MODEL=$(echo $DEVV | awk '{print $2,$3}'| xargs)
+
+#modem 版本号
+OF=$(sms_tool -d $DEVICE at "at+gmr")
+FW=$(echo "$OF" | awk -F[,:] '/^\+GMR:/ {print $2}' | xargs)
+
+OCCID=$(sms_tool -d $DEVICE at "at+iccid")
+ICCID=$(echo "$OCCID" | awk -F[,:] '/^\ICCID:/ {print $2}' | xargs)
+
+OMSI=$(sms_tool -d $DEVICE at "at+cimi")
+IMSI=$(echo "$OMSI" | grep -A2 cimi | awk 'NR ==2{gsub("\r","");print $2}')
+
+OMEI=$(sms_tool -d $DEVICE at "at+cgsn")
+IMEI=$(echo "$OMEI" | grep -A2 cgsn | awk 'NR ==2{gsub("\r","");print $2}')
+# Protocol
+# DRIVER=QMI_WWAN & DRIVER=CDC_MBIM & DRIVER=CDC_ETHER
+PV=$(cat /sys/kernel/debug/usb/devices)
+PVCUT=$(echo $PV | awk -F 'Vendor=2949 ProdID=8241' '{print $2}' | cut -c-1220)
+if echo "$PVCUT" | grep -q "Driver=qmi_wwan"
+then
+    PROTO="qmi"
+elif echo "$PVCUT" | grep -q "Driver=cdc_mbim"
+then
+    PROTO="mbim"
+elif echo "$PVCUT" | grep -q "Driver=cdc_ether"
+then
+    PROTO="ecm"
+elif echo "$PVCUT" | grep -q "Driver=option"
+then
+    PROTO="ppp"
+fi
