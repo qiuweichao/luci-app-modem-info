@@ -472,16 +472,6 @@ return view.extend({
 						}
 					}
 
-					if (document.getElementById('pband')) {
-						var view = document.getElementById("pband");
-						if (json.pband == '') { 
-						view.textContent = '-';
-						}
-						else {
-						view.textContent = json.pband;
-						}
-					}
-
 					if (document.getElementById('pci')) {
 						var view = document.getElementById("pci");
 						if (json.pci == '') { 
@@ -489,16 +479,6 @@ return view.extend({
 						}
 						else {
 						view.textContent = json.pci + ' ' + json.earfcn;
-						}
-					}
-
-					if (document.getElementById('sband')) {
-						var view = document.getElementById("sband");
-						if (json.sband == '') { 
-						view.textContent = '-';
-						}
-						else {
-						view.textContent = json.sband;
 						}
 					}
 
@@ -518,7 +498,7 @@ return view.extend({
 		return E([], [
 			E('h2', {}, [ _('3ginfo-lite') ]),
 			E('div', { class: 'cbi-section-descr' }, _('More information about the 3ginfo on the')+ ' <a href="https://eko.one.pl/?p=openwrt-3ginfo" target="_blank">' + _('eko.one.pl forum') + '</a>.'),
-			E('h4', {}, [ _('General Information') ]),
+			E('h2', {}, [ _('General Information') ]),
 			E('table', { 'class': 'table' }, [
 				E('tr', { 'class': 'tr' }, [
 					E('div', { 'class': 'td left', 'width': '33%' }, [ _('Signal strength:')]),
@@ -542,7 +522,7 @@ return view.extend({
 					]),
 			]),
 
-			E('h4', {}, [ _('Modem Information') ]),
+			E('h2', {}, [ _('Modem Information') ]),
 			E('table', { 'class': 'table' }, [
 				E('tr', { 'class': 'tr' }, [
 					E('div', { 'class': 'td left', 'width': '33%' }, [ _('Modem type:')]),
@@ -566,7 +546,7 @@ return view.extend({
 					]),
 			]),
 
-			E('h4', {}, [ _('Cell / Signal Information') ]),
+			E('h2', {}, [ _('Cell / Signal Information') ]),
 			E('table', { 'class': 'table' }, [
 				E('tr', { 'class': 'tr' }, [
 					E('div', { 'class': 'td left', 'width': '33%' }, [ _('MCC MNC: ')]),
@@ -642,21 +622,8 @@ return view.extend({
 						))
 					]),
 				E('tr', { 'class': 'tr' }, [
-					E('div', { 'class': 'td left', 'width': '33%' }, [ _('Primary band: ')]),
-					E('div', { 'class': 'td left', 'id': 'pband' }, [ '-' ]),
-					]),
-				E('tr', { 'class': 'tr' }, [
 					E('div', { 'class': 'td left', 'width': '33%' }, [ _('PCI & EARFCN: ')]),
 					E('div', { 'class': 'td left', 'id': 'pci' }, [ '-' ]),
-					]),
-
-				E('tr', { 'class': 'tr' }, [
-					E('div', { 'class': 'td left', 'width': '33%' }, [ _('(S) band: ')]),
-					E('div', { 'class': 'td left', 'id': 'sband' }, [ '-' ]),
-					]),
-				E('tr', { 'class': 'tr' }, [
-					E('div', { 'class': 'td left', 'width': '33%' }, [ _('(S) PCI & (S) EARFCN: ')]),
-					E('div', { 'class': 'td left', 'id': 'spci' }, [ '-' ]),
 					]),
 			]),
 
