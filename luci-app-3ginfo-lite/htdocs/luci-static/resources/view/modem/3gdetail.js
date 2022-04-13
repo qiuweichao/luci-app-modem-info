@@ -492,7 +492,49 @@ return view.extend({
 						}
 					}
 
+					if (document.getElementById('longitude')) {
+						var view = document.getElementById("longitude");
 
+						if (json.longitude == '') {
+							view.textContent = '-';
+						}
+						else {
+							view.textContent = json.longitude;
+						}
+					}
+
+					if (document.getElementById('latitude')) {
+						var view = document.getElementById("latitude");
+
+						if (json.latitude == '') {
+							view.textContent = '-';
+						}
+						else {
+							view.textContent = json.latitude;
+						}
+					}
+
+					if (document.getElementById('satellite')) {
+						var view = document.getElementById("satellite");
+
+						if (json.satellite == '') {
+							view.textContent = '-';
+						}
+						else {
+							view.textContent = json.satellite;
+						}
+					}
+
+					if (document.getElementById('gstate')) {
+						var view = document.getElementById("gstate");
+
+						if (json.gstate == '') {
+							view.textContent = '-';
+						}
+						else {
+							view.textContent = json.gstate;
+						}
+					}
 			});
 		});
 		return E([], [
@@ -627,6 +669,25 @@ return view.extend({
 					]),
 			]),
 
+			E('h2', {}, [ _('GPS信息') ]),
+			E('table', { 'class': 'table' }, [
+				E('tr', { 'class': 'tr' }, [
+					E('div', { 'class': 'td left', 'width': '33%' }, [ _('GPS状态:')]),
+					E('div', { 'class': 'td left', 'id': 'gstate' }, [ '-' ]),
+					]),
+				E('tr', { 'class': 'tr' }, [
+					E('div', { 'class': 'td left', 'width': '33%' }, [ _('经度:')]),
+					E('div', { 'class': 'td left', 'id': 'longitude' }, [ '-' ]),
+					]),
+				E('tr', { 'class': 'tr' }, [
+					E('div', { 'class': 'td left', 'width': '33%' }, [ _('纬度:')]),
+					E('div', { 'class': 'td left', 'id': 'latitude' }, [ '-' ]),
+					]),
+				E('tr', { 'class': 'tr' }, [
+					E('div', { 'class': 'td left', 'width': '33%' }, [ _('卫星数:')]),
+					E('div', { 'class': 'td left', 'id': 'satellite' }, [ '-' ]),
+					]),
+			]),
 		]);
 	},
 	handleSaveApply: null,
