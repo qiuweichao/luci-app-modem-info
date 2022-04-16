@@ -250,6 +250,8 @@ cat <<EOF
 "satellite":"$STLS",
 "latitude":"$LATDE",
 "longitude":"$LOTDE",
+"wsg_lo":"$WSG_LO",
+"wsg_la":"$WSG_LA",
 "gstate":"$GSTATE",
 "lac_hex":"$LAC_HEX",
 "tac_dec":"$TAC_DEC",

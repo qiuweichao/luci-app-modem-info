@@ -69,6 +69,31 @@ IMSI=$(echo "$OMSI" | grep -A2 cimi | awk 'NR ==2{gsub("\r","");print $2}')
 
 OMEI=$(sms_tool -d $DEVICE at "at+cgsn")
 IMEI=$(echo "$OMEI" | grep -A2 cgsn | awk 'NR ==2{gsub("\r","");print $2}')
+
+#GPS mode
+OF=$(sms_tool -d $DEVICE at "AT\$MYGPSSTATE")
+GSTATE=$(echo $OF | awk '{print $3,$4}' | xargs)
+if [ "$GSTATE" = "gps closed" ]; 
+then
+    SWITCH=$(sms_tool -d $DEVICE at "AT\$MYGPSPWR=1")
+elif [ "$GSTATE" = "gps opened" ]; 
+then
+    O=$(sms_tool -d $DEVICE at "AT\$MYGPSPOS=0")
+    LOTDE=$(echo $O | awk -F[,:] '/MYGPSPOS:/{gsub("\r","");print $7,$6}')
+    LATDE=$(echo $O | awk -F[,:] '/MYGPSPOS:/{gsub("\r","");print $5,$4}')
+    STLS=$(echo $O | awk -F[,:] '/MYGPSPOS:/{gsub("\r","");print $9}')
+	LO1=$(echo $O | awk -F[,:] '/MYGPSPOS:/{gsub("\r","");print $6}')
+	LO2=$(echo $LO1 | awk -F[.] '{printf "%d\n",$1/100}')
+	WSG_LO=$(echo $LO1 $LO2 | awk '{printf "%0.8f\n",$2 +($1 - 100*$2)/60 }')
+	LA1=$(echo $O | awk -F[,:] '/MYGPSPOS:/{gsub("\r","");print $4}')
+	LA2=$(echo $LA1 | awk -F[.] '{printf "%d\n",$1/100}')
+	WSG_LA=$(echo $LA1 $LA2 | awk '{printf "%0.8f\n",$2 +($1 - 100*$2)/60 }')
+	# [ -n "$ADDON" ] && ADDON="$ADDON,"
+	# ADDON="$ADDON"'{"WSG_LO":"'$WSG_LO'"}'
+	# [ -n "$ADDON" ] && ADDON="$ADDON,"
+	# ADDON="$ADDON"'{"WSG_LA":"'$WSG_LA'"}'
+fi
+
 # Protocol
 # DRIVER=QMI_WWAN & DRIVER=CDC_MBIM & DRIVER=CDC_ETHER
 PV=$(cat /sys/kernel/debug/usb/devices)

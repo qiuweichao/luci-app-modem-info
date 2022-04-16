@@ -10,6 +10,118 @@
 	https://github.com/koshev-msk/luci-app-modeminfo
 */
 
+function initMap(){
+	createMap();//创建地图
+	setMapEvent();//设置地图事件
+	addMapControl();//向地图添加控件
+	//addMapOverlay();//向地图添加覆盖物
+}
+
+function createMap(){ 
+    // map = new BMap.Map("map"); 
+	map.centerAndZoom(ggPoint,16); 	
+}
+
+function setMapEvent(){
+	map.enableScrollWheelZoom(true);
+	map.enableKeyboard();
+	map.enableDragging();
+	map.enableDoubleClickZoom()
+}
+
+function addMapOverlay(){
+	
+	marker = new BMap.Marker(ggPoint);
+	map.addOverlay(marker);
+	var myGeo = new BMap.Geocoder(); 
+	marker.addEventListener("click", function(){       
+	  myGeo.getLocation(ggPoint, function(rs){
+		   if (rs){
+			  infoWindow = new BMap.InfoWindow(rs.address, opts);
+			  map.openInfoWindow(infoWindow, ggPoint);
+		   }
+	  });     
+	});
+}
+
+var map;
+var x;
+var y;
+var ggPoint;
+var markergg;
+var marker;
+var opts = {
+	width : 200,     // 信息窗口宽度
+	height: 100,     // 信息窗口高度
+	title : "GPS坐标位置" , // 信息窗口标题
+	message:"这里是"
+}
+var infoWindow;
+
+function LoadBaiduMapScript() {
+		//console.log("初始化百度地图脚本...");
+		//const AK = 你的密钥;
+	const BMap_URL = "https://api.map.baidu.com/api?v=2.0&ak="+ AK +"&s=1&callback=onBMapCallback";
+	return new Promise((resolve, reject) => {
+			// 如果已加载直接返回
+		if(typeof BMap !== "undefined") {
+			resolve(BMap);
+			return true;
+		}
+			// 百度地图异步加载回调处理
+		window.onBMapCallback = function () {
+			console.log("百度地图脚本初始化成功...");
+			resolve(BMap);
+			map= new BMap.Map("map");
+			console.log(x);
+			console.log(y);
+			ggPoint= new BMap.Point(x,y);
+			console.log(map);
+		};
+			// 插入script脚本
+		let scriptNode = document.createElement("script");
+		scriptNode.setAttribute("type", "text/javascript");
+		scriptNode.setAttribute("src", BMap_URL);
+		document.body.appendChild(scriptNode);
+	});
+}
+
+  //向地图添加控件
+function addMapControl(){
+	var scaleControl = new BMap.ScaleControl({anchor:BMAP_ANCHOR_BOTTOM_LEFT});
+	scaleControl.setUnit(BMAP_UNIT_IMPERIAL);
+	map.addControl(scaleControl);
+	var navControl = new BMap.NavigationControl({anchor:BMAP_ANCHOR_TOP_LEFT,type:0});
+	map.addControl(navControl);
+	var overviewControl = new BMap.OverviewMapControl({anchor:BMAP_ANCHOR_BOTTOM_RIGHT,isOpen:false});
+	map.addControl(overviewControl);
+}
+
+function translateCallback(data){
+	if(data.status === 0) {
+	  markergg = new BMap.Marker(data.points[0]);
+	  map.addOverlay(markergg);
+	  //var label = new BMap.Label("转换后的百度坐标（正确）",{offset:new BMap.Size(20,-10)});
+	  //marker.setLabel(label); //添加百度label
+	  map.setCenter(data.points[0]);
+	  var myGeo = new BMap.Geocoder(); 
+		markergg.addEventListener("click", function(){       
+		  myGeo.getLocation(data.points[0], function(rs){
+				if (rs){
+					infoWindow = new BMap.InfoWindow(rs.address, opts);
+					map.openInfoWindow(infoWindow, data.points[0]);
+				}
+		  });     
+		});
+	}
+  }
+
+function wgs84_to_bd09(){
+	  var convertor = new BMap.Convertor();
+	  var pointArr = [];
+	  pointArr.push(ggPoint);
+	  convertor.translate(pointArr, 1, 5, translateCallback)
+}
 
 function csq_bar(v, m) {
 var pg = document.querySelector('#csq')
@@ -172,6 +284,7 @@ pg.setAttribute('title', '%s'.format(v) + ' | ' + tip + ' ');
 
 return view.extend({
 	render: function() {
+		//loadScript();
 		poll.add(function() {
 			return L.resolveDefault(fs.exec_direct('/usr/share/3ginfo-lite/3ginfo.sh', 'json'))
 			.then(function(res) {
@@ -500,6 +613,7 @@ return view.extend({
 						}
 						else {
 							view.textContent = json.longitude;
+							x=json.wsg_lo;
 						}
 					}
 
@@ -511,6 +625,7 @@ return view.extend({
 						}
 						else {
 							view.textContent = json.latitude;
+							y=json.wsg_la;
 						}
 					}
 
@@ -534,6 +649,14 @@ return view.extend({
 						else {
 							view.textContent = json.gstate;
 						}
+					}
+					
+					
+					if (document.getElementById('map')) {
+						LoadBaiduMapScript();
+						var view = document.getElementById("map");
+						initMap();
+						wgs84_to_bd09();
 					}
 			});
 		});
@@ -688,6 +811,7 @@ return view.extend({
 					E('div', { 'class': 'td left', 'id': 'satellite' }, [ '-' ]),
 					]),
 			]),
+			E('div', {'style': 'width:900px;height:550px;border:#ccc solid 1px;font-size:12px', 'id':'map'}, [ _('-') ]),
 		]);
 	},
 	handleSaveApply: null,
