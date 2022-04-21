@@ -11,14 +11,19 @@
 */
 
 function initMap(){
-	createMap();//创建地图
-	setMapEvent();//设置地图事件
-	addMapControl();//向地图添加控件
-	//addMapOverlay();//向地图添加覆盖物
+	if(typeof(BMap)== "object")
+	{
+		createMap();//创建地图
+		map.clearOverlays();
+		setMapEvent();//设置地图事件
+		addMapControl();//向地图添加控件
+		wgs84_to_bd09();
+	}//addMapOverlay();//向地图添加覆盖物
 }
 
 function createMap(){ 
-    // map = new BMap.Map("map"); 
+	console.log(x,y);
+	ggPoint= new BMap.Point(x,y);
 	map.centerAndZoom(ggPoint,16); 	
 }
 
@@ -29,27 +34,29 @@ function setMapEvent(){
 	map.enableDoubleClickZoom()
 }
 
-function addMapOverlay(){
+// function addMapOverlay(){
 	
-	marker = new BMap.Marker(ggPoint);
-	map.addOverlay(marker);
-	var myGeo = new BMap.Geocoder(); 
-	marker.addEventListener("click", function(){       
-	  myGeo.getLocation(ggPoint, function(rs){
-		   if (rs){
-			  infoWindow = new BMap.InfoWindow(rs.address, opts);
-			  map.openInfoWindow(infoWindow, ggPoint);
-		   }
-	  });     
-	});
-}
+// 	marker = new BMap.Marker(ggPoint);
+// 	map.addOverlay(marker);
+// 	var myGeo = new BMap.Geocoder(); 
+// 	marker.addEventListener("click", function(){       
+// 	  myGeo.getLocation(ggPoint, function(rs){
+// 		   if (rs){
+// 			  infoWindow = new BMap.InfoWindow(rs.address, opts);
+// 			  map.openInfoWindow(infoWindow, ggPoint);
+// 		   }
+// 	  });     
+// 	});
+// }
 
 var map;
 var x;
 var y;
 var ggPoint;
 var markergg;
-var marker;
+//var marker;
+var myGeo;
+var convertor;
 var opts = {
 	width : 200,     // 信息窗口宽度
 	height: 100,     // 信息窗口高度
@@ -63,6 +70,7 @@ function LoadBaiduMapScript() {
 		//const AK = 你的密钥;
 	const BMap_URL = "https://api.map.baidu.com/api?v=2.0&ak="+ AK +"&s=1&callback=onBMapCallback";
 	return new Promise((resolve, reject) => {
+		console.log(typeof(BMap));
 			// 如果已加载直接返回
 		if(typeof BMap !== "undefined") {
 			resolve(BMap);
@@ -72,17 +80,20 @@ function LoadBaiduMapScript() {
 		window.onBMapCallback = function () {
 			console.log("百度地图脚本初始化成功...");
 			resolve(BMap);
-			map= new BMap.Map("map");
+			map = new BMap.Map("map");
 			console.log(x);
 			console.log(y);
-			ggPoint= new BMap.Point(x,y);
-			console.log(map);
+			console.log(typeof(BMap));
+			// ggPoint= new BMap.Point(x,y);
+			//console.log(map);
 		};
 			// 插入script脚本
 		let scriptNode = document.createElement("script");
 		scriptNode.setAttribute("type", "text/javascript");
 		scriptNode.setAttribute("src", BMap_URL);
-		document.body.appendChild(scriptNode);
+		var root_s = document.getElementsByTagName('script')[0];
+		//document.body.appendChild(scriptNode);
+		root_s.parentNode.insertBefore(scriptNode, root_s);
 	});
 }
 
@@ -104,7 +115,7 @@ function translateCallback(data){
 	  //var label = new BMap.Label("转换后的百度坐标（正确）",{offset:new BMap.Size(20,-10)});
 	  //marker.setLabel(label); //添加百度label
 	  map.setCenter(data.points[0]);
-	  var myGeo = new BMap.Geocoder(); 
+	  myGeo = new BMap.Geocoder(); 
 		markergg.addEventListener("click", function(){       
 		  myGeo.getLocation(data.points[0], function(rs){
 				if (rs){
@@ -117,7 +128,7 @@ function translateCallback(data){
   }
 
 function wgs84_to_bd09(){
-	  var convertor = new BMap.Convertor();
+	  convertor = new BMap.Convertor();
 	  var pointArr = [];
 	  pointArr.push(ggPoint);
 	  convertor.translate(pointArr, 1, 5, translateCallback)
@@ -284,7 +295,6 @@ pg.setAttribute('title', '%s'.format(v) + ' | ' + tip + ' ');
 
 return view.extend({
 	render: function() {
-		//loadScript();
 		poll.add(function() {
 			return L.resolveDefault(fs.exec_direct('/usr/share/3ginfo-lite/3ginfo.sh', 'json'))
 			.then(function(res) {
@@ -656,7 +666,6 @@ return view.extend({
 						LoadBaiduMapScript();
 						var view = document.getElementById("map");
 						initMap();
-						wgs84_to_bd09();
 					}
 			});
 		});
