@@ -44,6 +44,6 @@ opkg install sms-tool_2021-12-03-d38898f4-1_XXX.ipk
 
 
 
-![](https://github.com/4IceG/Personal_data/blob/master/zrzuty/1.0.15-20220325.gif?raw=true)
+![](https://github.com/qiuweichao/Personal_data/blob/master/modeminfo.gif?raw=true)
 
 ## 
