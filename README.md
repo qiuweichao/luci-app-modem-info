@@ -2,7 +2,7 @@
 
 Luci-app-modem-info is fork from https://github.com/4IceG/luci-app-3ginfo-lite.git
 
-Luci-app-modem-info是3ginfo项目的简化版本，适用于mPCI-E/M.2和USB 3G/LTE无线模块，在openwrt的web界面中可显示无线模块的相关信息。
+Luci-app-modem-info是3ginfo项目的简化版本，适用于mPCI-E/M.2和USB 3G/LTE无线模块，在openwrt的web界面中可显示无线模块的相关信息。已经支持NEOWAY N720 GPS调用百度地图的坐标信息显示，后续会增加其它模块。
 
 
 ``` bash
@@ -16,6 +16,8 @@ Luci-app-modem-info是3ginfo项目的简化版本，适用于mPCI-E/M.2和USB 3G
  - Huawei E3372/E3276
  - Huawei E3276 HiLink
  - Huawei E5786 (mobile-wifi / HiLink)
+ - NEOWAY N720
+ - FIBOCOM L610
  
 没有测试完全的设备 (并不是所有的数据都可以显示出来，需要手动修改相关脚本指令等):
  - Sierra Wireless MC7710
