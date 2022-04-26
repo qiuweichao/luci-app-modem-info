@@ -1,5 +1,4 @@
-# Quectel EC20-E
-# Quectel EC25
+# NEOWAY N720
 
 O=$(sms_tool -d $DEVICE at "AT\$MYADCTEMP=0")
 
